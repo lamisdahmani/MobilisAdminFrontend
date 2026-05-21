@@ -1,0 +1,192 @@
+.table-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  padding: 16px;
+  height: 100%; /* Dynamically stretches to fill the left column completely */
+  min-height: 0; 
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* ── HEADER ── */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.table-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.table-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── SEARCH ── */
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  background: var(--color-surface);
+}
+
+.search-icon { color: #aaa; }
+
+.search-input {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: var(--color-text);
+  width: 140px;
+  background: transparent;
+}
+
+/* ── FILTER SELECT ── */
+.filter-select {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--color-text);
+  background: var(--color-surface);
+  outline: none;
+  min-width: 120px;
+  transition: border-color var(--transition-fast);
+}
+
+.filter-select:focus {
+  border-color: var(--color-primary);
+}
+
+/* ── SCROLLABLE TABLE BODY — AUTOMATIC SPACE-FILLER ── */
+.table-scroll {
+  flex: 1; /* Takes exactly the remaining card space automatically */
+  overflow-y: auto;
+  overflow-x: auto;
+  min-height: 0;
+  margin-bottom: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #a0aab5 transparent;
+}
+
+/* Custom layout native scrollbar styling matching scroll.png */
+.table-scroll::-webkit-scrollbar { 
+  width: 7px; 
+}
+.table-scroll::-webkit-scrollbar-thumb { 
+  background: #a0aab5; 
+  border-radius: 4px; 
+}
+.table-scroll::-webkit-scrollbar-track { 
+  background: #f1f3f5;
+  border-radius: 4px;
+}
+
+/* ── TABLE ── */
+.sig-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 500px;
+}
+
+.sig-table thead tr { border-bottom: 1px solid #eee; }
+
+.sig-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-weight: 500;
+  color: var(--color-text-faint);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  position: sticky;
+  top: 0;
+  background: var(--color-surface);
+  z-index: 1;
+}
+
+.sig-table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-text);
+}
+
+.sig-table tbody tr:last-child td { border-bottom: none; }
+.sig-table tbody tr:hover { background: #fafffe; }
+
+/* ── BADGES ── */
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge-warning { background: #fff0f0; color: var(--color-danger); }
+.badge-info    { background: #fff8e6; color: var(--color-warning); }
+.badge-success { background: #e6f7ef; color: var(--color-success); }
+
+/* ── ACTION BUTTONS ── */
+.action-btn {
+  padding: 5px 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: opacity var(--transition-fast);
+}
+.action-btn:hover { opacity: 0.82; }
+.btn-dark  { background: var(--color-text); color: white; border: none; }
+.btn-light { background: white; color: var(--color-text); border: 1px solid var(--color-border); }
+
+/* ── PAGINATION ── */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border-light);
+  flex-shrink: 0;
+}
+
+.page-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  transition: background var(--transition-fast);
+}
+.page-btn:hover  { background: #f5f5f5; }
+.page-btn.active { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+
+.page-dots { font-size: 13px; color: var(--color-text-faint); padding: 0 4px; }

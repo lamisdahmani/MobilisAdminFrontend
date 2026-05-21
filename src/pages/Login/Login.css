@@ -1,0 +1,420 @@
+/* ══════════════════════════════════════════
+   LOGIN PAGE — all classes prefixed "lp-"
+   so they never collide with your app's CSS
+   ══════════════════════════════════════════ */
+
+/* ── Variables (login-page scope only) ── */
+.lp-page-wrapper {
+  --lp-green:       #00853f;
+  --lp-green-hover: #006b32;
+  --lp-border:      #e0e0e0;
+  --lp-text:        #1a1a1a;
+  --lp-muted:       #777;
+  --lp-radius:      8px;
+  --lp-input-h:     44px;
+  --lp-error:       #e03131;
+  --lp-ok:          #00853f;
+
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* ── Card ── */
+.lp-auth-card {
+  display: flex;
+  flex-wrap: wrap;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  overflow: hidden;
+  width: min(100%, 1180px);
+  min-height: 620px;
+}
+
+/* ── Language switcher ── */
+.lp-lang-switcher-wrapper {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  z-index: 200;
+}
+[dir="rtl"] .lp-lang-switcher-wrapper {
+  right: auto;
+  left: 20px;
+}
+
+.lp-lang-switcher { position: relative; }
+
+.lp-lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  background: #fff;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.lp-lang-btn:hover {
+  border-color: var(--lp-green);
+  box-shadow: 0 0 0 3px rgba(0,133,63,0.1);
+}
+
+.lp-lang-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #fff;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  overflow: hidden;
+  min-width: 140px;
+  z-index: 201;
+}
+[dir="rtl"] .lp-lang-dropdown { right: auto; left: 0; }
+
+.lp-lang-option {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+[dir="rtl"] .lp-lang-option { text-align: right; }
+.lp-lang-option:hover { background: #f0f0f0; color: var(--lp-green); }
+
+/* ── Left panel ── */
+.lp-left-panel {
+  width: 50%;
+  padding: 40px 40px 0;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+}
+
+.lp-top-section { flex: 1; }
+
+.lp-mobilis-logo {
+  width: 160px;
+  margin-bottom: 30px;
+  display: block;
+}
+
+.lp-main-title {
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: #222;
+  line-height: 1.3;
+  margin-bottom: 16px;
+}
+
+.lp-green { color: var(--lp-green); }
+
+.lp-description {
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 30px;
+}
+
+.lp-features {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.lp-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  color: #444;
+}
+
+.lp-icon { color: var(--lp-green); }
+
+.lp-bottom-map {
+  margin-top: auto;
+  width: calc(100% + 80px);
+  margin-left: -40px;
+  margin-right: -40px;
+}
+
+.lp-map-img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* ── Mobile header ── */
+.lp-mobile-header {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  gap: 12px;
+  width: 100%;
+}
+
+.lp-mobile-logo { width: 80px; }
+
+.lp-mobile-header span {
+  font-size: 13px;
+  color: #444;
+}
+
+/* ── Auth panel (right) ── */
+.lp-auth-panel {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+.lp-form-container {
+  flex: 1;
+  padding: 20px 24px 24px;
+  box-sizing: border-box;
+  position: relative;
+  min-height: 640px;
+}
+
+.lp-form-inner {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.lp-forms-body {
+  flex: 1;
+  position: relative;
+}
+
+.lp-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 28px 48px;
+}
+
+/* ── Fields ── */
+.lp-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.lp-field-label {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--lp-text);
+}
+
+.lp-field-input {
+  height: var(--lp-input-h);
+  padding: 0 14px;
+  border: 1.5px solid var(--lp-border);
+  border-radius: var(--lp-radius);
+  font-size: 14px;
+  color: var(--lp-text);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.lp-field-input::placeholder { color: #bbb; }
+.lp-field-input:focus {
+  border-color: var(--lp-green);
+  box-shadow: 0 0 0 3px rgba(0,133,63,0.12);
+}
+.lp-field-input.lp-input-error {
+  border-color: var(--lp-error);
+  box-shadow: 0 0 0 3px rgba(224,49,49,0.1);
+}
+.lp-field-input.lp-input-ok { border-color: var(--lp-ok); }
+
+.lp-field-error-slot {
+  height: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.lp-field-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--lp-error);
+}
+
+/* Eye button */
+.lp-input-icon-wrap { position: relative; }
+.lp-input-icon-wrap .lp-field-input { padding-right: 44px; }
+[dir="rtl"] .lp-input-icon-wrap .lp-field-input { padding-right: 14px; padding-left: 44px; }
+
+.lp-eye-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--lp-muted);
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+[dir="rtl"] .lp-eye-btn { right: auto; left: 12px; }
+.lp-eye-btn:hover { color: var(--lp-text); }
+
+/* Remember / forgot */
+.lp-login-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+}
+
+.lp-forgot-link {
+  font-size: 13px;
+  color: var(--lp-green);
+  text-decoration: none;
+  font-weight: 500;
+}
+.lp-forgot-link:hover { text-decoration: underline; }
+
+.lp-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--lp-text);
+  cursor: pointer;
+}
+.lp-checkbox-label input[type="checkbox"] {
+  accent-color: var(--lp-green);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+/* Buttons */
+.lp-btn-primary {
+  height: 48px;
+  background: var(--lp-green);
+  color: #fff;
+  border: none;
+  border-radius: var(--lp-radius);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  width: 100%;
+  margin-top: 6px;
+}
+.lp-btn-primary:hover { background: var(--lp-green-hover); }
+.lp-btn-primary:active { transform: scale(0.98); }
+
+.lp-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--lp-muted);
+  font-size: 12px;
+}
+.lp-divider::before,
+.lp-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--lp-border);
+}
+
+.lp-btn-google {
+  height: 48px;
+  background: #fff;
+  border: 1.5px solid var(--lp-border);
+  border-radius: var(--lp-radius);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--lp-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.2s, border-color 0.2s;
+  width: 100%;
+}
+.lp-btn-google:hover { background: #f5f5f5; border-color: #ccc; }
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 900px) {
+  .lp-mobile-header { display: flex; }
+
+  .lp-auth-card {
+    flex-direction: column;
+    max-width: 100%;
+    min-height: unset;
+  }
+
+  .lp-left-panel { display: none; }
+
+  .lp-auth-panel {
+    width: 100%;
+    min-height: unset;
+  }
+
+  .lp-form-container { min-height: auto; }
+
+  .lp-form-inner {
+    position: relative;
+    top: 0; left: 0; right: 0; bottom: 0;
+  }
+
+  .lp-auth-form { padding: 24px; }
+
+  .lp-login-meta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lp-auth-form { padding: 20px 16px; }
+  .lp-field-input { font-size: 13px; height: 42px; }
+  .lp-btn-primary,
+  .lp-btn-google { height: 44px; font-size: 13px; }
+}

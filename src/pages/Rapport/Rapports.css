@@ -1,0 +1,401 @@
+/* ═══════════════════════════════════════════
+   RAPPORTS PAGE
+═══════════════════════════════════════════ */
+
+.rap-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+/* ── GENERATE CARD ── */
+.rap-generate-card {
+  background: white;
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  padding: 24px 28px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rap-generate-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 20px 0;
+}
+
+/* Form row — all fields + button on one line */
+.rap-form-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  width: 100%;
+}
+
+.rap-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Période field gets a bit more space for the double date */
+.rap-field-periode {
+  flex: 1.4;
+}
+
+.rap-form-field label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+}
+
+/* Wrapper for native select — keeps width 100% */
+.rap-select-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.rap-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 9px 32px 9px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #334155;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 11px center;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.rap-select:focus {
+  border-color: #1b6b3a;
+  box-shadow: 0 0 0 3px rgba(27, 107, 58, 0.08);
+}
+
+/* Date range row */
+.rap-date-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+}
+
+.rap-date-input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #334155;
+  background: white;
+  outline: none;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.rap-date-input:focus {
+  border-color: #1b6b3a;
+  box-shadow: 0 0 0 3px rgba(27, 107, 58, 0.08);
+}
+
+.rap-date-sep {
+  color: #94a3b8;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* Generate button */
+.rap-btn-submit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+  background: #1b6b3a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  height: 40px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.rap-btn-submit:hover {
+  background: #14532d;
+}
+
+/* Info banner */
+.rap-info-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: #eff6ff;
+  border-radius: 8px;
+  font-size: 12.5px;
+  color: #3b82f6;
+}
+
+.rap-info-icon {
+  flex-shrink: 0;
+  color: #3b82f6;
+}
+
+/* ── TABLE CARD ── */
+.rap-table-card {
+  background: white;
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Top bar: title left, search right */
+.rap-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.rap-table-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.rap-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  width: 280px;
+}
+
+.rap-search {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: #334155;
+  width: 100%;
+  background: transparent;
+}
+
+.rap-search::placeholder { color: #94a3b8; }
+
+/* Scrollable table area */
+.rap-table-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  min-height: 0;
+}
+
+.rap-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.rap-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+  color: #94a3b8;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #f1f5f9;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
+
+.rap-table td {
+  padding: 16px 16px;
+  border-bottom: 1px solid #f8fafc;
+  color: #334155;
+}
+
+.rap-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.rap-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* Title cell with icon */
+.rap-title-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.rap-file-icon {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+/* Colored badges */
+.rap-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.rap-badge-region  { background: #e6f4ea; color: #137333; }
+.rap-badge-analyse { background: #e8f0ff; color: #2f66ff; }
+.rap-badge-perf    { background: #f0e8ff; color: #7b2fff; }
+
+/* Action buttons */
+.rap-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.rap-action-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.rap-action-btn.view     { background: #edf7f2; color: #1b6b3a; }
+.rap-action-btn.download { background: #eef2ff; color: #4361ee; }
+.rap-action-btn:hover    { transform: scale(1.06); opacity: 0.85; }
+
+/* Empty state */
+.rap-empty {
+  text-align: center;
+  color: #94a3b8;
+  padding: 40px 0;
+  font-size: 13px;
+}
+
+/* Footer */
+.rap-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.rap-count {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.rap-pagination {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.rap-page-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  transition: all 0.15s;
+}
+
+.rap-page-btn:hover:not(:disabled):not(.active) {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.rap-page-btn.active {
+  background: #1b6b3a;
+  color: white;
+  border-color: #1b6b3a;
+}
+
+.rap-page-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .rap-form-row {
+    flex-wrap: wrap;
+  }
+  .rap-form-field {
+    flex: 1 1 calc(50% - 7px);
+  }
+  .rap-field-periode {
+    flex: 1 1 100%;
+  }
+  .rap-btn-submit {
+    width: 100%;
+    justify-content: center;
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .rap-form-field {
+    flex: 1 1 100%;
+  }
+  .rap-search-wrap {
+    width: 100%;
+  }
+  .rap-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

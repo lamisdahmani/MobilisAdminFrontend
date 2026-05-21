@@ -1,0 +1,249 @@
+/* ── STATISTIQUES PAGE ── */
+.stat-page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+/* ── FILTERS ROW ── */
+.stat-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.stat-filter-select {
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: 12px;
+  color: var(--color-text);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.stat-filter-select:focus {
+  border-color: var(--color-primary);
+}
+
+/* ── TOP STAT CARDS ── */
+.stat-cards-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.stat-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.stat-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stat-card-label {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.stat-card-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.stat-card-icon {
+  font-size: 20px;
+  opacity: 0.85;
+}
+
+/* ── MIDDLE GRID (byType + byRegion) ── */
+.stat-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  flex-shrink: 0;   /* natural height — no stretching */
+}
+
+/* ── CHART CARDS ── */
+.chart-card-ui2 {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+}
+
+.chart-card-ui2 h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 14px;
+}
+
+.bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;          /* fixed gap — NOT space-between */
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 36px;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar-label {
+  font-size: 12px;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bar-label.region {
+  font-size: 11.5px;
+}
+
+.bar-track {
+  background: var(--color-border-light);
+  border-radius: 4px;
+  height: 7px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.bar-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: right;
+}
+
+/* ── BOTTOM ROW (evolution + resume) ── */
+.stat-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 10px;
+  flex: 1;           /* take remaining vertical space */
+  min-height: 260px;
+}
+
+/* ── EVOLUTION CARD ── */
+.evolution-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.evolution-card h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 8px;
+  flex-shrink: 0;
+}
+
+.evolution-chart-wrap {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── RESUME CARD ── */
+.resume-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.resume-card h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 14px;
+}
+
+.resume-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.resume-row:last-child {
+  border-bottom: none;
+}
+
+.resume-row-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.resume-row-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 899px) {
+  .stat-cards-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-bottom-row {
+    grid-template-columns: 1fr;
+    flex: unset;
+    min-height: unset;
+  }
+
+  .evolution-card {
+    min-height: 260px;
+  }
+
+  .bar-row {
+    grid-template-columns: 110px 1fr 30px;
+  }
+}

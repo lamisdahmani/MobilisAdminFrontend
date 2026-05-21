@@ -1,0 +1,75 @@
+/* ── STAT CARDS ROW ── */
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  flex-shrink: 0;
+  margin-bottom: 16px;
+}
+
+/* ── MAIN GRID ── */
+.dashboard-grid {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  /* Fixes the grid layout to a stable frame matching the viewport space */
+  height: calc(100vh - 170px);
+  min-height: 480px;
+  overflow: hidden;
+}
+
+/* Left container: Fits the table tightly to the grid's height limit */
+.grid-left {
+  flex: 1.8;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Right container: Independently scrollable when charts overflow */
+.grid-right {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-right: 4px; /* Tiny cushion for the inner scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #a0aab5 transparent;
+}
+
+.grid-right::-webkit-scrollbar {
+  width: 6px;
+}
+.grid-right::-webkit-scrollbar-thumb {
+  background: #a0aab5;
+  border-radius: 4px;
+}
+
+/* ── RESPONSIVE OVERRIDES ── */
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    height: auto;
+    overflow: visible;
+    flex-direction: column;
+  }
+  .grid-left, .grid-right {
+    height: auto;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 768px) {
+  .stat-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-cards { 
+    grid-template-columns: 1fr; 
+  }
+}

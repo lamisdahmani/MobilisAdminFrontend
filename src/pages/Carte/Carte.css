@@ -1,0 +1,241 @@
+/* ══════════════════════════════════════
+   CARTE PAGE
+══════════════════════════════════════ */
+
+.carte-page {
+  display: flex;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── MAP AREA ── */
+.carte-map-container {
+  flex: 1;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  min-height: 0;
+}
+
+.carte-map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Hide default Google Maps UI elements we don't want */
+.carte-map .gm-bundled-control,
+.carte-map .gm-svpc,
+.carte-map .gm-style-mtc {
+  display: none !important;
+}
+
+/* Floating heatmap button — top-left over the map */
+.carte-btn-heatmap {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background 0.15s;
+}
+
+.carte-btn-heatmap:hover {
+  background: #f8f9fa;
+}
+
+.orange-circle-icon {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f4a261;
+  flex-shrink: 0;
+}
+
+/* Map loading / error states */
+.carte-map-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* ── RIGHT SIDEBAR ── */
+.carte-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+/* Search bar */
+.carte-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 9px 13px;
+}
+
+.carte-search {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: #334155;
+  width: 100%;
+  background: transparent;
+}
+.carte-search::placeholder { color: #94a3b8; }
+
+/* White panels */
+.carte-panel {
+  background: white;
+  border: 1px solid #e8edf2;
+  border-radius: 12px;
+  padding: 18px 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.carte-panel-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px;
+}
+
+/* Zone list */
+.carte-zones {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.carte-zone-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.carte-zone-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.carte-zone-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.carte-zone-sub {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* Solid badges */
+.carte-badge {
+  padding: 4px 11px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.badge-critique { background: #e63946; color: white; }
+.badge-eleve    { background: #f4a261; color: white; }
+.badge-faible   { background: #1b6b3a; color: white; }
+
+/* Legend */
+.carte-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.carte-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.carte-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Custom info window */
+.carte-info-window {
+  padding: 4px 2px;
+  min-width: 160px;
+}
+
+.carte-info-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 4px;
+}
+
+.carte-info-sub {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0 0 6px;
+}
+
+.carte-info-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .carte-page {
+    flex-direction: column;
+    overflow-y: auto;
+    height: auto;
+  }
+
+  .carte-sidebar {
+    width: 100%;
+    overflow-y: visible;
+  }
+
+  .carte-map-container {
+    height: 400px;
+    min-height: 320px;
+    flex: none;
+  }
+}

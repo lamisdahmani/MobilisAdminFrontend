@@ -1,0 +1,321 @@
+{
+  "sidebar": {
+    "navTitle": { "fr": "Navigation", "en": "Navigation", "ar": "التنقل" },
+    "gestionTitle": { "fr": "Gestion", "en": "Management", "ar": "الإدارة" },
+    "dashboard": { "fr": "Tableau de bord", "en": "Dashboard", "ar": "لوحة التحكم" },
+    "signalements": { "fr": "Signalements", "en": "Reports", "ar": "البلاغات" },
+    "statistiques": { "fr": "Statistiques", "en": "Statistics", "ar": "الإحصائيات" },
+    "carte": { "fr": "Carte", "en": "Map", "ar": "الخريطة" },
+    "utilisateurs": { "fr": "Utilisateurs", "en": "Users", "ar": "المستخدمون" },
+    "rapports": { "fr": "Rapports", "en": "Reports", "ar": "التقارير" },
+    "adminName": { "fr": "Admin", "en": "Admin", "ar": "موظف" },
+    "adminRole": { "fr": "Administrateur", "en": "Administrator", "ar": "موظف" },
+    "logout": { "fr": "Se déconnecter", "en": "Log out", "ar": "تسجيل الخروج" }
+  },
+
+  "languages": {
+    "fr": { "name": "Français" },
+    "en": { "name": "English" },
+    "ar": { "name": "العربية" }
+  },
+
+  "dashboard": {
+    "pageTitle": { "fr": "Tableau de bord", "en": "Dashboard", "ar": "لوحة التحكم" },
+    "pageSubtitle": { "fr": "Vue d'ensemble des performances et des signalements", "en": "Overview of performance and reports", "ar": "نظرة عامة على الأداء والبلاغات" },
+    "statCards": {
+      "totalSignalements": { "fr": "Total signalements", "en": "Total reports", "ar": "إجمالي البلاغات" },
+      "enCours": { "fr": "En cours", "en": "In progress", "ar": "قيد المعالجة" },
+      "resolus": { "fr": "Résolus", "en": "Resolved", "ar": "تم الحل" },
+      "enAttente": { "fr": "En attente", "en": "Pending", "ar": "في الانتظار" }
+    },
+    "table": {
+      "title": { "fr": "Derniers signalements", "en": "Latest reports", "ar": "آخر البلاغات" },
+      "searchPlaceholder": { "fr": "Recherche...", "en": "Search...", "ar": "بحث..." },
+      "filterAllTypes": { "fr": "tous types", "en": "all types", "ar": "كل الأنواع" },
+      "colMsisdn": { "fr": "MSISDN", "en": "MSISDN", "ar": "MSISDN" },
+      "colType": { "fr": "Type", "en": "Type", "ar": "النوع" },
+      "colRegion": { "fr": "Région", "en": "Region", "ar": "المنطقة" },
+      "colStatus": { "fr": "Statut", "en": "Status", "ar": "الحالة" },
+      "colAction": { "fr": "Action", "en": "Action", "ar": "الإجراء" },
+      "actionTraiter": { "fr": "Traiter", "en": "Process", "ar": "معالجة" },
+      "actionVoir": { "fr": "Voir", "en": "View", "ar": "عرض" }
+    }
+  },
+
+  "signalements": {
+    "pageTitle": { "fr": "Signalements", "en": "Reports", "ar": "البلاغات" },
+    "pageSubtitle": { "fr": "Liste des signalements reçus", "en": "List of incoming reports", "ar": "قائمة البلاغات الواردة" },
+    "searchPlaceholder": { "fr": "Recherche...", "en": "Search...", "ar": "بحث..." },
+    "exportBtn": { "fr": "Export", "en": "Export", "ar": "تصدير" },
+    "filters": {
+      "tous": { "fr": "Tous", "en": "All", "ar": "الكل" },
+      "enAttente": { "fr": "En attente", "en": "Pending", "ar": "في الانتظار" },
+      "enCours": { "fr": "En cours", "en": "In progress", "ar": "قيد المعالجة" },
+      "resolu": { "fr": "Résolu", "en": "Resolved", "ar": "تم الحل" }
+    },
+    "dropdowns": {
+      "allRegions": { "fr": "toutes les regions", "en": "all regions", "ar": "كل المناطق" },
+      "allTypes": { "fr": "tous les types", "en": "all types", "ar": "كل الأنواع" }
+    },
+    "regions": {
+      "babEzzouar": { "fr": "Bab Ezzouar", "en": "Bab Ezzouar", "ar": "باب الزوار" },
+      "elHarrach": { "fr": "El Harrach", "en": "El Harrach", "ar": "الحراش" },
+      "sidiMhamed": { "fr": "Sidi M'Hamed", "en": "Sidi M'Hamed", "ar": "سيدي محمد" },
+      "darElBeida": { "fr": "Dar El Beïda", "en": "Dar El Beïda", "ar": "دار البيضاء" },
+      "algerCentre": { "fr": "Alger-Centre", "en": "Algiers-Centre", "ar": "الجزائر الوسطى" },
+      "kouba": { "fr": "Kouba", "en": "Kouba", "ar": "القبة" },
+      "birMouradRais": { "fr": "Bir Mourad Raïs", "en": "Bir Mourad Raïs", "ar": "بئر مراد رايس" },
+      "hydra": { "fr": "Hydra", "en": "Hydra", "ar": "حيدرة" }
+    },
+    "problemTypes": {
+      "coupureReseau": { "fr": "Coupure réseau", "en": "Network outage", "ar": "انقطاع الشبكة" },
+      "faibleSignal": { "fr": "Faible signal", "en": "Weak signal", "ar": "إشارة ضعيفة" },
+      "absenceCouverture": { "fr": "Absence couverture", "en": "No coverage", "ar": "غياب التغطية" },
+      "congestionReseau": { "fr": "Congestion réseau", "en": "Network congestion", "ar": "ازدحام الشبكة" },
+      "lenteurConnexion": { "fr": "Lenteur de connexion", "en": "Slow connection", "ar": "بطء الاتصال" }
+    },
+    "table": {
+      "colMsisdn": { "fr": "MSISDN", "en": "MSISDN", "ar": "MSISDN" },
+      "colType": { "fr": "Type de problème", "en": "Problem type", "ar": "نوع المشكلة" },
+      "colRegion": { "fr": "Région", "en": "Region", "ar": "المنطقة" },
+      "colCellId": { "fr": "Cell ID", "en": "Cell ID", "ar": "معرّف الخلية" },
+      "colDate": { "fr": "Date", "en": "Date", "ar": "التاريخ" },
+      "colStatus": { "fr": "Status", "en": "Status", "ar": "الحالة" },
+      "colAction": { "fr": "Action", "en": "Action", "ar": "الإجراء" },
+      "actionView": { "fr": "Voir", "en": "View", "ar": "عرض" },
+      "actionEdit": { "fr": "Modifier", "en": "Edit", "ar": "تعديل" },
+      "actionDelete": { "fr": "Supprimer", "en": "Delete", "ar": "حذف" }
+    },
+    "status": {
+      "resolu": { "fr": "Résolu", "en": "Resolved", "ar": "تم الحل" },
+      "enCours": { "fr": "En cours", "en": "In progress", "ar": "قيد المعالجة" },
+      "enAttente": { "fr": "En attente", "en": "Pending", "ar": "في الانتظار" }
+    }
+  },
+
+  "statistiques": {
+    "pageTitle": { "fr": "Statistiques", "en": "Statistics", "ar": "الإحصائيات" },
+    "pageSubtitle": { "fr": "Analyse détaillée des tendances", "en": "Detailed trends analysis", "ar": "تحليل الاتجاهات التفصيلي" },
+    "statCards": {
+      "signalementsMois": { "fr": "Signalements ce mois", "en": "Reports this month", "ar": "البلاغات هذا الشهر" },
+      "tauxResolution": { "fr": "Taux de résolution", "en": "Resolution rate", "ar": "معدل الحل" },
+      "tempsMoy": { "fr": "Temps moyen de résolution", "en": "Average resolution time", "ar": "متوسط وقت الحل" },
+      "zonesCritiques": { "fr": "Zones critiques", "en": "Critical zones", "ar": "المناطق الحرجة" }
+    },
+    "globalStatus": {
+      "title": { "fr": "Statut Global", "en": "Global Status", "ar": "الحالة العامة" },
+      "resolus": { "fr": "Résolus — 64%", "en": "Resolved — 64%", "ar": "تم الحل — 64%" },
+      "enCours": { "fr": "En cours — 21%", "en": "In progress — 21%", "ar": "قيد المعالجة — 21%" },
+      "enAttente": { "fr": "En attente — 15%", "en": "Pending — 15%", "ar": "في الانتظار — 15%" }
+    },
+    "topZones": {
+      "title": { "fr": "Top 3 zones critiques", "en": "Top 3 critical zones", "ar": "أعلى 3 مناطق حرجة" }
+    },
+    "byType": {
+      "title": { "fr": "Signalements par types", "en": "Reports by type", "ar": "البلاغات حسب النوع" },
+      "coupureReseau": { "fr": "Coupure réseau", "en": "Network outage", "ar": "انقطاع الشبكة" },
+      "faibleDebit": { "fr": "Faible débit", "en": "Low bandwidth", "ar": "ضعف التدفق" },
+      "congestion": { "fr": "Congestion", "en": "Congestion", "ar": "ازدحام" },
+      "lenteurConnexion": { "fr": "Lenteur de connexion", "en": "Slow connection", "ar": "بطء الاتصال" },
+      "absenceCouverture": { "fr": "Absence couverture", "en": "No coverage", "ar": "غياب التغطية" },
+      "autres": { "fr": "Autres", "en": "Others", "ar": "أخرى" }
+    },
+    "byRegion": {
+      "title": { "fr": "Signalements par region", "en": "Reports by region", "ar": "البلاغات حسب المنطقة" }
+    },
+    "evolution": {
+      "title": { "fr": "Évolution mensuelle", "en": "Monthly evolution", "ar": "التطور الشهري" },
+      "tooltip": { "fr": "signalements", "en": "reports", "ar": "بلاغ" }
+    },
+    "resume": {
+      "title": { "fr": "Résumé performances", "en": "Performance summary", "ar": "ملخص الأداء" },
+      "signalTraites": { "fr": "Signalements traités", "en": "Processed reports", "ar": "البلاغات المعالجة" },
+      "moyParJour": { "fr": "Moy. signalements/jour", "en": "Avg. reports/day", "ar": "متوسط البلاغات/يوم" },
+      "usersSignale": { "fr": "Utilisateurs ayant signalé", "en": "Users who reported", "ar": "المستخدمون المُبلّغون" }
+    }
+  },
+
+  "carte": {
+    "pageTitle": { "fr": "Carte", "en": "Map", "ar": "الخريطة" },
+    "pageSubtitle": { "fr": "Visualisez les zones critiques", "en": "View critical zones", "ar": "عرض المناطق الحرجة" },
+    "searchPlaceholder": { "fr": "Recherche...", "en": "Search...", "ar": "بحث..." },
+    "criticalZones": {
+      "title": { "fr": "Zones critiques", "en": "Critical zones", "ar": "المناطق الحرجة" },
+      "signalements": { "fr": "signalements", "en": "reports", "ar": "بلاغ" }
+    },
+    "criticityLevel": {
+      "title": { "fr": "Niveau de criticité", "en": "Criticality level", "ar": "مستوى الخطورة" },
+      "critique": { "fr": "Critique (+80 signalements)", "en": "Critical (+80 reports)", "ar": "حرج (+80 بلاغ)" },
+      "eleve": { "fr": "Élevé 40–80", "en": "High 40–80", "ar": "مرتفع 40–80" },
+      "faible": { "fr": "Faible <40", "en": "Low <40", "ar": "منخفض <40" }
+    },
+    "levels": {
+      "critique": { "fr": "Critique", "en": "Critical", "ar": "حرج" },
+      "eleve": { "fr": "Élevé", "en": "High", "ar": "مرتفع" },
+      "faible": { "fr": "Faible", "en": "Low", "ar": "منخفض" }
+    }
+  },
+
+  "utilisateurs": {
+    "pageTitle": { "fr": "Utilisateurs", "en": "Users", "ar": "المستخدمون" },
+    "pageSubtitle": { "fr": "Gestion des comptes utilisateurs", "en": "User account management", "ar": "إدارة حسابات المستخدمين" },
+    "stats": {
+      "total": { "fr": "Total utilisateurs", "en": "Total users", "ar": "إجمالي المستخدمين" },
+      "actifs": { "fr": "Utilisateurs actifs", "en": "Active users", "ar": "المستخدمون النشطون" },
+      "suspendus": { "fr": "Utilisateurs suspendus", "en": "Suspended users", "ar": "المستخدمون الموقوفون" }
+    },
+    "searchPlaceholder": { "fr": "Recherche par MSISDN...", "en": "Search by MSISDN...", "ar": "البحث بـ MSISDN..." },
+    "filter": {
+      "tous": { "fr": "tous les utilisateurs", "en": "all users", "ar": "كل المستخدمين" },
+      "actif": { "fr": "Actif", "en": "Active", "ar": "نشط" },
+      "suspendu": { "fr": "Suspendu", "en": "Suspended", "ar": "موقوف" }
+    },
+    "table": {
+      "colMsisdn": { "fr": "MSISDN", "en": "MSISDN", "ar": "MSISDN" },
+      "colDate": { "fr": "Date d'inscription", "en": "Registration date", "ar": "تاريخ التسجيل" },
+      "colSignalements": { "fr": "Signalements", "en": "Reports", "ar": "البلاغات" },
+      "colStatus": { "fr": "Status", "en": "Status", "ar": "الحالة" },
+      "colAction": { "fr": "Action", "en": "Action", "ar": "الإجراء" }
+    },
+    "status": {
+      "actif": { "fr": "Actif", "en": "Active", "ar": "نشط" },
+      "suspendu": { "fr": "Suspendu", "en": "Suspended", "ar": "موقوف" }
+    },
+    "modal": {
+      "title": { "fr": "Suspendre utilisateur", "en": "Suspend user", "ar": "إيقاف المستخدم" },
+      "raisonLabel": { "fr": "Raison de suspension", "en": "Reason for suspension", "ar": "سبب الإيقاف" },
+      "raisonPlaceholder": { "fr": "Décrivez votre probleme ......", "en": "Describe the issue ......", "ar": "اشرح المشكلة......" },
+      "dateDebut": { "fr": "Date de debut", "en": "Start date", "ar": "تاريخ البداية" },
+      "dateFin": { "fr": "Date de fin", "en": "End date", "ar": "تاريخ النهاية" },
+      "submitBtn": { "fr": "Enregistrer", "en": "Save", "ar": "حفظ" },
+      "cancelBtn": { "fr": "Annuler", "en": "Cancel", "ar": "إلغاء" }
+    }
+  },
+
+  "rapports": {
+    "pageTitle": { "fr": "Rapports", "en": "Reports", "ar": "التقارير" },
+    "pageSubtitle": { "fr": "Rapports et exports", "en": "Reports and exports", "ar": "التقارير والتصديرات" },
+    "generate": {
+      "sectionTitle": { "fr": "Générer un rapport", "en": "Generate a report", "ar": "إنشاء تقرير" },
+      "reportType": { "fr": "TYPE DE RAPPORT", "en": "REPORT TYPE", "ar": "نوع التقرير" },
+      "region": { "fr": "RÉGION", "en": "REGION", "ar": "المنطقة" },
+      "problemType": { "fr": "TYPE DE PROBLÈME", "en": "PROBLEM TYPE", "ar": "نوع المشكلة" },
+      "period": { "fr": "PÉRIODE", "en": "PERIOD", "ar": "الفترة" },
+      "generateBtn": { "fr": "Générer le rapport", "en": "Generate report", "ar": "إنشاء التقرير" },
+      "perfTip": {
+        "fr": "Pour des performances optimales, veuillez sélectionner une période ne dépassant pas 1 mois.",
+        "en": "For optimal performance, please select a period not exceeding 1 month.",
+        "ar": "للحصول على أداء مثالي، يرجى اختيار فترة لا تتجاوز شهراً واحداً."
+      }
+    },
+    "reportTypes": {
+      "regionReports": { "fr": "Signalements par région", "en": "Reports by region", "ar": "البلاغات حسب المنطقة" },
+      "problemAnalysis": { "fr": "Analyse des problèmes", "en": "Problem analysis", "ar": "تحليل المشكلات" },
+      "networkPerformance": { "fr": "Performance réseau", "en": "Network performance", "ar": "أداء الشبكة" },
+      "users": { "fr": "Utilisateurs", "en": "Users", "ar": "المستخدمون" },
+      "executiveSummary": { "fr": "Résumé exécutif", "en": "Executive summary", "ar": "الملخص التنفيذي" }
+    },
+    "regions": {
+      "all": { "fr": "Toutes les régions", "en": "All regions", "ar": "كل المناطق" },
+      "babEzzouar": { "fr": "Bab Ezzouar", "en": "Bab Ezzouar", "ar": "باب الزوار" },
+      "elHarrach": { "fr": "El Harrach", "en": "El Harrach", "ar": "الحراش" },
+      "sidiMhamed": { "fr": "Sidi M'Hamed", "en": "Sidi M'Hamed", "ar": "سيدي محمد" },
+      "algerCentre": { "fr": "Alger-Centre", "en": "Algiers-Centre", "ar": "الجزائر الوسطى" }
+    },
+    "problemTypes": {
+      "all": { "fr": "Tous les types", "en": "All types", "ar": "كل الأنواع" },
+      "networkCut": { "fr": "Coupure réseau", "en": "Network outage", "ar": "انقطاع الشبكة" },
+      "weakSignal": { "fr": "Faible signal", "en": "Weak signal", "ar": "إشارة ضعيفة" },
+      "networkCongestion": { "fr": "Congestion réseau", "en": "Network congestion", "ar": "ازدحام الشبكة" }
+    },
+    "table": {
+      "sectionTitle": { "fr": "Rapports générés", "en": "Generated reports", "ar": "التقارير المُنشأة" },
+      "searchPlaceholder": { "fr": "Rechercher un rapport...", "en": "Search a report...", "ar": "البحث عن تقرير..." },
+      "colTitle": { "fr": "Titre du rapport", "en": "Report title", "ar": "عنوان التقرير" },
+      "colType": { "fr": "Type de rapport", "en": "Report type", "ar": "نوع التقرير" },
+      "colPeriod": { "fr": "Période", "en": "Period", "ar": "الفترة" },
+      "colGeneratedAt": { "fr": "Généré le", "en": "Generated on", "ar": "تاريخ الإنشاء" },
+      "colSize": { "fr": "Taille", "en": "Size", "ar": "الحجم" },
+      "colActions": { "fr": "Actions", "en": "Actions", "ar": "الإجراءات" },
+      "actionView": { "fr": "Voir", "en": "View", "ar": "عرض" },
+      "actionDownload": { "fr": "Télécharger", "en": "Download", "ar": "تنزيل" }
+    },
+    "pagination": {
+      "displaying": {
+        "fr": "Affichage de 1 à {count} sur {total} rapports",
+        "en": "Showing 1 to {count} of {total} reports",
+        "ar": "عرض 1 إلى {count} من أصل {total} تقرير"
+      },
+      "previous": { "fr": "Précédent", "en": "Previous", "ar": "السابق" },
+      "next": { "fr": "Suivant", "en": "Next", "ar": "التالي" }
+    },
+    "sampleData": {
+      "report1Title": { "fr": "Signalements par région - Mai 2025", "en": "Reports by region - May 2025", "ar": "البلاغات حسب المنطقة - مايو 2025" },
+      "report2Title": { "fr": "Analyse des problèmes - Mai 2025", "en": "Problem analysis - May 2025", "ar": "تحليل المشكلات - مايو 2025" },
+      "report3Title": { "fr": "Performance réseau - Mai 2025", "en": "Network performance - May 2025", "ar": "أداء الشبكة - مايو 2025" },
+      "report4Title": { "fr": "Utilisateurs actifs - Mai 2025", "en": "Active users - May 2025", "ar": "المستخدمون النشطون - مايو 2025" },
+      "report5Title": { "fr": "Résumé exécutif - Mai 2025", "en": "Executive summary - May 2025", "ar": "الملخص التنفيذي - مايو 2025" }
+    }
+  },
+
+  "auth": {
+    "login_tab": { "fr": "Connexion", "en": "Log in", "ar": "تسجيل الدخول" },
+    "register_tab": { "fr": "Créer un compte", "en": "Sign in", "ar": "إنشاء حساب" },
+    "email": { "fr": "Email", "en": "Email", "ar": "البريد الإلكتروني" },
+    "phone": { "fr": "Numéro de téléphone", "en": "Phone number", "ar": "رقم الهاتف" },
+    "password": { "fr": "Mot de passe", "en": "Password", "ar": "كلمة المرور" },
+    "confirm_password": { "fr": "Confirmer mot de passe", "en": "Confirm password", "ar": "تأكيد كلمة المرور" },
+    "remember_me": { "fr": "Se souvenir de moi", "en": "Remember me", "ar": "تذكرني" },
+    "forgot_password": { "fr": "Mot de passe oublié ?", "en": "Forgot password?", "ar": "نسيت كلمة المرور؟" },
+    "login_btn": { "fr": "Se connecter", "en": "Log in", "ar": "تسجيل الدخول" },
+    "register_btn": { "fr": "Créer un compte", "en": "Create account", "ar": "إنشاء حساب" },
+    "google_btn": { "fr": "Continuer avec Google", "en": "Continue with Google", "ar": "المتابعة مع Google" },
+    "no_account": { "fr": "Pas encore de compte ?", "en": "Don't have an account?", "ar": "ليس لديك حساب؟" },
+    "terms": { "fr": "J'accepte les conditions d'utilisation", "en": "I accept the terms of use", "ar": "أوافق على شروط الاستخدام" },
+    "email_required": { "fr": "L'email est requis.", "en": "Email is required.", "ar": "البريد الإلكتروني مطلوب." },
+    "email_invalid": { "fr": "Format email invalide. Ex: nom@gmail.com", "en": "Invalid email format. Ex: name@gmail.com", "ar": "صيغة البريد الإلكتروني غير صحيحة." },
+    "phone_required": { "fr": "Le numéro est requis.", "en": "Phone number is required.", "ar": "رقم الهاتف مطلوب." },
+    "phone_invalid": { "fr": "Numéro invalide. Chiffres uniquement.", "en": "Invalid number. Digits only.", "ar": "رقم غير صالح. أرقام فقط." },
+    "password_required": { "fr": "Le mot de passe est requis.", "en": "Password is required.", "ar": "كلمة المرور مطلوبة." },
+    "password_short": { "fr": "Minimum 6 caractères.", "en": "Minimum 6 characters.", "ar": "6 أحرف على الأقل." },
+    "confirm_required": { "fr": "Veuillez confirmer le mot de passe.", "en": "Please confirm your password.", "ar": "يرجى تأكيد كلمة المرور." },
+    "confirm_mismatch": { "fr": "Les mots de passe ne correspondent pas.", "en": "Passwords do not match.", "ar": "كلمتا المرور غير متطابقتين." },
+    "left_title_1": { "fr": "Application Web de", "en": "Web Application for", "ar": "منصة" },
+    "left_title_2": { "fr": "Cartographie", "en": "Mapping", "ar": "عرض" },
+    "left_title_3": { "fr": "et d'", "en": "and ", "ar": "و " },
+    "left_title_4": { "fr": "Analyse", "en": "Analysis", "ar": "تحليل" },
+    "left_title_5": { "fr": "du Reseau Mobilis", "en": "of the Mobilis Network", "ar": "شبكة موبيليس عبر الخريطة" },
+    "left_desc": { "fr": "Visualisez la qualité du réseau, signalez les problèmes et suivez les performances du réseau en temps réel.", "en": "Visualize network quality, report problems and track network performance in real time.", "ar": "تصور جودة الشبكة، أبلغ عن المشاكل وتابع أداء الشبكة في الوقت الفعلي." },
+    "left_feature_1": { "fr": "Carte interactive", "en": "Interactive map", "ar": "خريطة تفاعلية" },
+    "left_feature_2": { "fr": "Statistiques Reseau", "en": "Network statistics", "ar": "إحصائيات الشبكة" },
+    "left_feature_3": { "fr": "Signalement rapide", "en": "Quick reporting", "ar": "إبلاغ سريع" },
+    "lang_french": { "fr": "Français", "en": "French", "ar": "الفرنسية" },
+    "lang_english": { "fr": "Anglais", "en": "English", "ar": "الإنجليزية" },
+    "lang_arabic": { "fr": "Arabe", "en": "Arabic", "ar": "العربية" },
+    "or_label": { "fr": "OU", "en": "OR", "ar": "او" }
+  },
+
+  "common": {
+    "months": {
+      "fr": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+      "en": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+      "ar": ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
+    },
+    "search": { "fr": "Recherche...", "en": "Search...", "ar": "بحث..." },
+    "loading": { "fr": "Chargement...", "en": "Loading...", "ar": "جاري التحميل..." },
+    "previous": { "fr": "Précédent", "en": "Previous", "ar": "السابق" },
+    "next": { "fr": "Suivant", "en": "Next", "ar": "التالي" },
+    "save": { "fr": "Enregistrer", "en": "Save", "ar": "حفظ" },
+    "cancel": { "fr": "Annuler", "en": "Cancel", "ar": "إلغاء" },
+    "close": { "fr": "Fermer", "en": "Close", "ar": "إغلاق" },
+    "view": { "fr": "Voir", "en": "View", "ar": "عرض" },
+    "download": { "fr": "Télécharger", "en": "Download", "ar": "تنزيل" },
+    "export": { "fr": "Export", "en": "Export", "ar": "تصدير" },
+    "sectionMissing": { "fr": "Section {name} — à implémenter", "en": "Section {name} — to implement", "ar": "القسم {name} — يجب تنفيذه" },
+    "status": {
+      "resolu": { "fr": "Résolu", "en": "Resolved", "ar": "تم الحل" },
+      "enCours": { "fr": "En cours", "en": "In progress", "ar": "قيد المعالجة" },
+      "enAttente": { "fr": "En attente", "en": "Pending", "ar": "في الانتظار" }
+    }
+  }
+}
