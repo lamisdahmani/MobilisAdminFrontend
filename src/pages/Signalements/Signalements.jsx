@@ -1,9 +1,17 @@
+// FILE: MobilisAdminFrontend/src/pages/Signalements/Signalements.jsx
+// FIXED: after saving a status update, calls notificationsApi.sendStatusUpdate()
+//        so the mobile user gets a push notification immediately.
+// FIXED: auto-polls every 30s so new reports from the mobile app appear
+//        without requiring a full page reload.
+
 import { useState, useEffect, useCallback } from 'react';
 import { Search, Eye, Settings, Trash2, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useLang } from '../../context/LanguageContext';
-import { reportsApi } from '../../api/client';
+import { reportsApi, notificationsApi } from '../../api/client';
 import t from '../../i18n/translations.json';
 import './Signalements.css';
+
+const REFRESH_INTERVAL = 30_000; // 30 seconds
 
 const STATUS_CONFIG = {
   Resolved:   'badge-success',
@@ -18,8 +26,7 @@ const STATUS_LABELS = {
 };
 
 const FILTER_KEYS = ['tous', 'Pending', 'InProgress', 'Resolved'];
-
-const PAGE_SIZE = 10;
+const PAGE_SIZE   = 10;
 
 export default function Signalements() {
   const { lang } = useLang();
@@ -27,23 +34,26 @@ export default function Signalements() {
   const tb = t.signalements.table;
 
   const [activeFilter, setActiveFilter] = useState('tous');
-  const [search, setSearch]             = useState('');
-  const [wilaya, setWilaya]             = useState('');
-  const [type, setType]                 = useState('');
-  const [page, setPage]                 = useState(1);
-  const [data, setData]                 = useState({ items: [], totalCount: 0, totalPages: 1 });
-  const [loading, setLoading]           = useState(true);
+  const [search,  setSearch]  = useState('');
+  const [wilaya,  setWilaya]  = useState('');
+  const [type,    setType]    = useState('');
+  const [page,    setPage]    = useState(1);
+  const [data,    setData]    = useState({ items: [], totalCount: 0, totalPages: 1 });
+  const [loading, setLoading] = useState(true);
 
   // Edit modal state
-  const [editModal, setEditModal]   = useState(false);
-  const [editRow, setEditRow]       = useState(null);
-  const [newStatut, setNewStatut]   = useState('');
-  const [notesAdmin, setNotesAdmin] = useState('');
-  const [saving, setSaving]         = useState(false);
+  const [editModal,   setEditModal]   = useState(false);
+  const [editRow,     setEditRow]     = useState(null);
+  const [newStatut,   setNewStatut]   = useState('');
+  const [notesAdmin,  setNotesAdmin]  = useState('');
+  const [saving,      setSaving]      = useState(false);
+  // Notification feedback
+  const [notifStatus, setNotifStatus] = useState(null); // 'sent' | 'failed' | null
 
-  const fetchData = useCallback(() => {
-    setLoading(true);
-    reportsApi.getAll({
+  // ── Fetch reports ───────────────────────────────────────────────────────────
+  const fetchData = useCallback((silent = false) => {
+    if (!silent) setLoading(true);
+    return reportsApi.getAll({
       page,
       pageSize: PAGE_SIZE,
       ...(activeFilter !== 'tous' ? { statut: activeFilter } : {}),
@@ -52,10 +62,16 @@ export default function Signalements() {
     })
       .then(res => setData(res.data))
       .catch(console.error)
-      .finally(() => setLoading(false));
+      .finally(() => { if (!silent) setLoading(false); });
   }, [page, activeFilter, wilaya, type]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  // ── Auto-refresh every 30s so new mobile reports appear automatically ──────
+  useEffect(() => {
+    const interval = setInterval(() => fetchData(true), REFRESH_INTERVAL);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   const handleFilter = (key) => { setActiveFilter(key); setPage(1); };
 
@@ -63,14 +79,25 @@ export default function Signalements() {
     setEditRow(row);
     setNewStatut(row.statut);
     setNotesAdmin('');
+    setNotifStatus(null);
     setEditModal(true);
   };
 
+  // ── Save status + send push notification to mobile user ────────────────────
   const handleSaveEdit = async () => {
     if (!editRow) return;
     setSaving(true);
+    setNotifStatus(null);
     try {
+      // 1. Update status in DB
       await reportsApi.updateStatut(editRow.id, { statut: newStatut, notesAdmin });
+
+      // 2. Send push notification to the mobile user
+      //    Fire-and-forget: we don't block the UI if notification fails
+      notificationsApi.sendStatusUpdate(editRow.id, newStatut, notesAdmin)
+        .then(() => setNotifStatus('sent'))
+        .catch(() => setNotifStatus('failed'));
+
       setEditModal(false);
       fetchData();
     } catch (err) {
@@ -238,9 +265,22 @@ export default function Signalements() {
                   onChange={e => setNotesAdmin(e.target.value)}
                 />
               </div>
+
+              {/* Notification feedback banner */}
+              {notifStatus === 'sent' && (
+                <p className="modal-notif-ok">✓ Notification envoyée à l'utilisateur.</p>
+              )}
+              {notifStatus === 'failed' && (
+                <p className="modal-notif-err">⚠ Statut mis à jour mais la notification a échoué.</p>
+              )}
+
               <button className="modal-submit" onClick={handleSaveEdit} disabled={saving}>
                 {saving ? 'Enregistrement...' : 'Enregistrer'}
               </button>
+
+              <p className="modal-notif-hint">
+                Une notification push sera envoyée automatiquement à l'utilisateur mobile.
+              </p>
             </div>
           </div>
         </div>

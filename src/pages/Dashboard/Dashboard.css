@@ -73,3 +73,115 @@
     grid-template-columns: 1fr; 
   }
 }
+/* ══════════════════════════════════════════════════════════════
+   DASHBOARD.CSS  — ADD THESE RULES at the bottom of your
+   existing Dashboard.css file (don't replace the whole file)
+══════════════════════════════════════════════════════════════ */
+
+/* ── Shared panel shell ─────────────────────────────────────── */
+.dash-panel {
+  background: white;
+  border: 1px solid #e8edf2;
+  border-radius: 12px;
+  padding: 18px 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.dash-panel-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px;
+}
+
+.dash-loading {
+  color: #aaa;
+  font-size: 13px;
+  padding: 4px 0;
+}
+
+/* ── Statut Global ──────────────────────────────────────────── */
+.dash-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dash-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.dash-status-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.dash-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dash-status-pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ── Zones Critiques ────────────────────────────────────────── */
+.dash-zones-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dash-zone-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-zone-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dash-zone-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-zone-sub {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.dash-zone-badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* reuse carte badge classes if already defined; these are fallbacks */
+.badge-critique { background: #e63946 !important; color: white; }
+.badge-eleve    { background: #f4a261 !important; color: white; }
+.badge-faible   { background: #1b6b3a !important; color: white; }
