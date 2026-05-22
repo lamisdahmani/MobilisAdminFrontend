@@ -1,28 +1,25 @@
-import { useState } from 'react';
-import { Search, Eye, Settings, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Search, Eye, Settings, Trash2, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useLang } from '../../context/LanguageContext';
+import { reportsApi } from '../../api/client';
 import t from '../../i18n/translations.json';
 import './Signalements.css';
 
-const ALL_DATA = [
-  { msisdn: '213697******', type: 'coupureReseau',     region: 'babEzzouar',   cell: 'BTS-12 / A', date: '20/04 16:33', status: 'resolu'    },
-  { msisdn: '213697******', type: 'coupureReseau',     region: 'darElBeida',   cell: 'BTS-07 / B', date: '20/04 16:33', status: 'resolu'    },
-  { msisdn: '213697******', type: 'faibleSignal',      region: 'algerCentre',  cell: 'BTS-03 / C', date: '20/04 16:33', status: 'resolu'    },
-  { msisdn: '213697******', type: 'absenceCouverture', region: 'sidiMhamed',   cell: 'BTS-09 / A', date: '20/04 16:33', status: 'enCours'   },
-  { msisdn: '213697******', type: 'congestionReseau',  region: 'elHarrach',    cell: 'BTS-15 / B', date: '20/04 16:33', status: 'enCours'   },
-  { msisdn: '213697******', type: 'faibleSignal',      region: 'kouba',        cell: 'BTS-02 / C', date: '20/04 16:33', status: 'enCours'   },
-  { msisdn: '213697******', type: 'lenteurConnexion',  region: 'birMouradRais',cell: 'BTS-06 / A', date: '20/04 16:33', status: 'enAttente' },
-  { msisdn: '213697******', type: 'lenteurConnexion',  region: 'hydra',        cell: 'BTS-07 / A', date: '20/04 16:33', status: 'enAttente' },
-];
-
 const STATUS_CONFIG = {
-  resolu:    'badge-success',
-  enCours:   'badge-info',
-  enAttente: 'badge-warning',
+  Resolved:   'badge-success',
+  InProgress: 'badge-info',
+  Pending:    'badge-warning',
 };
 
-const FILTER_KEYS = ['tous', 'enAttente', 'enCours', 'resolu'];
-const TOTAL_PAGES = 40;
+const STATUS_LABELS = {
+  Pending:    { fr: 'En attente', en: 'Pending',     ar: 'قيد الانتظار' },
+  InProgress: { fr: 'En cours',   en: 'In Progress', ar: 'قيد المعالجة' },
+  Resolved:   { fr: 'Résolu',     en: 'Resolved',    ar: 'محلول'        },
+};
+
+const FILTER_KEYS = ['tous', 'Pending', 'InProgress', 'Resolved'];
+
+const PAGE_SIZE = 10;
 
 export default function Signalements() {
   const { lang } = useLang();
@@ -31,32 +28,82 @@ export default function Signalements() {
 
   const [activeFilter, setActiveFilter] = useState('tous');
   const [search, setSearch]             = useState('');
-  const [region, setRegion]             = useState('allRegions');
-  const [type, setType]                 = useState('allTypes');
+  const [wilaya, setWilaya]             = useState('');
+  const [type, setType]                 = useState('');
   const [page, setPage]                 = useState(1);
+  const [data, setData]                 = useState({ items: [], totalCount: 0, totalPages: 1 });
+  const [loading, setLoading]           = useState(true);
 
-  const filtered = ALL_DATA.filter(row => {
-    const rowStatus = t.signalements.status[row.status]?.[lang] ?? row.status;
-    const rowRegion = t.signalements.regions[row.region]?.[lang] ?? row.region;
-    const rowType   = t.signalements.problemTypes[row.type]?.[lang] ?? row.type;
+  // Edit modal state
+  const [editModal, setEditModal]   = useState(false);
+  const [editRow, setEditRow]       = useState(null);
+  const [newStatut, setNewStatut]   = useState('');
+  const [notesAdmin, setNotesAdmin] = useState('');
+  const [saving, setSaving]         = useState(false);
 
-    const matchFilter = activeFilter === 'tous' || row.status === activeFilter;
-    const matchSearch = !search
-      || row.msisdn.includes(search)
-      || rowType.toLowerCase().includes(search.toLowerCase())
-      || rowRegion.toLowerCase().includes(search.toLowerCase());
-    const matchRegion = region === 'allRegions' || row.region === region;
-    const matchType   = type === 'allTypes'     || row.type === type;
+  const fetchData = useCallback(() => {
+    setLoading(true);
+    reportsApi.getAll({
+      page,
+      pageSize: PAGE_SIZE,
+      ...(activeFilter !== 'tous' ? { statut: activeFilter } : {}),
+      ...(wilaya ? { wilaya } : {}),
+      ...(type   ? { typeProbleme: type } : {}),
+    })
+      .then(res => setData(res.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [page, activeFilter, wilaya, type]);
 
-    return matchFilter && matchSearch && matchRegion && matchType;
-  });
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   const handleFilter = (key) => { setActiveFilter(key); setPage(1); };
+
+  const openEdit = (row) => {
+    setEditRow(row);
+    setNewStatut(row.statut);
+    setNotesAdmin('');
+    setEditModal(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editRow) return;
+    setSaving(true);
+    try {
+      await reportsApi.updateStatut(editRow.id, { statut: newStatut, notesAdmin });
+      setEditModal(false);
+      fetchData();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Supprimer ce signalement ?')) return;
+    try {
+      await reportsApi.delete(id);
+      fetchData();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  // Client-side search filter on top of paginated results
+  const filtered = (data.items || []).filter(row => {
+    if (!search) return true;
+    return (
+      row.userPhone?.includes(search) ||
+      row.wilaya?.toLowerCase().includes(search.toLowerCase()) ||
+      row.problemType?.toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
   return (
     <div className="sig-page">
 
-      {/* Top bar: search + export */}
+      {/* Top bar */}
       <div className="sig-topbar">
         <div className="sig-search-wrap">
           <Search size={14} color="#aaa" />
@@ -70,28 +117,33 @@ export default function Signalements() {
         <button className="sig-export-btn">⬇ {t.common.export[lang]}</button>
       </div>
 
-      {/* Filter bar: status tabs + dropdowns */}
+      {/* Filter bar */}
       <div className="sig-filterbar">
         <div className="sig-tabs">
-          {FILTER_KEYS.map(key => (
-            <button
-              key={key}
-              className={`sig-tab sig-tab--${key} ${activeFilter === key ? 'active' : ''}`}
-              onClick={() => handleFilter(key)}
-            >
-              {s.filters[key][lang]}
-            </button>
-          ))}
+          {FILTER_KEYS.map(key => {
+            const label = key === 'tous'
+              ? s.filters.tous[lang]
+              : (STATUS_LABELS[key]?.[lang] ?? key);
+            return (
+              <button
+                key={key}
+                className={`sig-tab sig-tab--${key.toLowerCase()} ${activeFilter === key ? 'active' : ''}`}
+                onClick={() => handleFilter(key)}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
         <div className="sig-dropdowns">
-          <select className="sig-select" value={region} onChange={e => setRegion(e.target.value)}>
-            <option value="allRegions">{s.dropdowns.allRegions[lang]}</option>
+          <select className="sig-select" value={wilaya} onChange={e => { setWilaya(e.target.value); setPage(1); }}>
+            <option value="">{s.dropdowns.allRegions[lang]}</option>
             {Object.entries(s.regions).map(([key, val]) => (
               <option key={key} value={key}>{val[lang]}</option>
             ))}
           </select>
-          <select className="sig-select" value={type} onChange={e => setType(e.target.value)}>
-            <option value="allTypes">{s.dropdowns.allTypes[lang]}</option>
+          <select className="sig-select" value={type} onChange={e => { setType(e.target.value); setPage(1); }}>
+            <option value="">{s.dropdowns.allTypes[lang]}</option>
             {Object.entries(s.problemTypes).map(([key, val]) => (
               <option key={key} value={key}>{val[lang]}</option>
             ))}
@@ -99,7 +151,7 @@ export default function Signalements() {
         </div>
       </div>
 
-      {/* Table card */}
+      {/* Table */}
       <div className="sig-table-wrap">
         <div className="sig-table-scroll">
           <table className="sig-table">
@@ -111,29 +163,27 @@ export default function Signalements() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={7} style={{ textAlign: 'center', padding: '32px', color: '#aaa' }}>
-                    Aucun résultat
-                  </td>
-                </tr>
-              ) : filtered.map((row, i) => (
-                <tr key={i}>
-                  <td>{row.msisdn}</td>
-                  <td>{t.signalements.problemTypes[row.type]?.[lang] ?? row.type}</td>
-                  <td>{t.signalements.regions[row.region]?.[lang] ?? row.region}</td>
-                  <td>{row.cell}</td>
-                  <td>{row.date}</td>
+              {loading ? (
+                <tr><td colSpan={7} style={{ textAlign: 'center', padding: '32px', color: '#aaa' }}>Chargement...</td></tr>
+              ) : filtered.length === 0 ? (
+                <tr><td colSpan={7} style={{ textAlign: 'center', padding: '32px', color: '#aaa' }}>Aucun résultat</td></tr>
+              ) : filtered.map((row) => (
+                <tr key={row.id}>
+                  <td>{row.userPhone}</td>
+                  <td>{t.signalements.problemTypes[row.problemType]?.[lang] ?? row.problemType}</td>
+                  <td>{row.wilaya}</td>
+                  <td>—</td>
+                  <td>{new Date(row.createdAt).toLocaleDateString('fr-FR')}</td>
                   <td>
-                    <span className={`sig-badge ${STATUS_CONFIG[row.status]}`}>
-                      {t.signalements.status[row.status]?.[lang] ?? row.status}
+                    <span className={`sig-badge ${STATUS_CONFIG[row.statut] ?? ''}`}>
+                      {STATUS_LABELS[row.statut]?.[lang] ?? row.statut}
                     </span>
                   </td>
                   <td>
                     <div className="sig-actions">
                       <button className="sig-action-btn sig-action-btn--view"   title={tb.actionView[lang]}><Eye size={14} /></button>
-                      <button className="sig-action-btn sig-action-btn--edit"   title={tb.actionEdit[lang]}><Settings size={14} /></button>
-                      <button className="sig-action-btn sig-action-btn--delete" title={tb.actionDelete[lang]}><Trash2 size={14} /></button>
+                      <button className="sig-action-btn sig-action-btn--edit"   title={tb.actionEdit[lang]} onClick={() => openEdit(row)}><Settings size={14} /></button>
+                      <button className="sig-action-btn sig-action-btn--delete" title={tb.actionDelete[lang]} onClick={() => handleDelete(row.id)}><Trash2 size={14} /></button>
                     </div>
                   </td>
                 </tr>
@@ -147,7 +197,7 @@ export default function Signalements() {
           <button className="sig-page-btn" onClick={() => setPage(p => Math.max(1, p - 1))}>
             <ChevronLeft size={14} />
           </button>
-          {[1, 2, 3, 4].map(n => (
+          {[...new Set([1, 2, 3, 4, data.totalPages].filter(n => n >= 1 && n <= data.totalPages))].map(n => (
             <button
               key={n}
               className={`sig-page-btn ${page === n ? 'active' : ''}`}
@@ -156,13 +206,45 @@ export default function Signalements() {
               {n}
             </button>
           ))}
-          <span className="sig-page-dots">...</span>
-          <button className="sig-page-btn" onClick={() => setPage(TOTAL_PAGES)}>{TOTAL_PAGES}</button>
-          <button className="sig-page-btn" onClick={() => setPage(p => Math.min(TOTAL_PAGES, p + 1))}>
+          <button className="sig-page-btn" onClick={() => setPage(p => Math.min(data.totalPages, p + 1))}>
             <ChevronRight size={14} />
           </button>
         </div>
       </div>
+
+      {/* Edit Status Modal */}
+      {editModal && editRow && (
+        <div className="modal-overlay" onClick={() => setEditModal(false)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Modifier le statut</h3>
+              <button className="modal-close" onClick={() => setEditModal(false)}><X size={18} /></button>
+            </div>
+            <div className="modal-body">
+              <div className="modal-field">
+                <label>Nouveau statut</label>
+                <select className="modal-input" value={newStatut} onChange={e => setNewStatut(e.target.value)}>
+                  <option value="Pending">En attente</option>
+                  <option value="InProgress">En cours</option>
+                  <option value="Resolved">Résolu</option>
+                </select>
+              </div>
+              <div className="modal-field">
+                <label>Note admin (optionnelle)</label>
+                <textarea
+                  className="modal-textarea"
+                  placeholder="Message envoyé à l'utilisateur..."
+                  value={notesAdmin}
+                  onChange={e => setNotesAdmin(e.target.value)}
+                />
+              </div>
+              <button className="modal-submit" onClick={handleSaveEdit} disabled={saving}>
+                {saving ? 'Enregistrement...' : 'Enregistrer'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

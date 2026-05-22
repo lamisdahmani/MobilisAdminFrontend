@@ -9,9 +9,10 @@ import Rapports from './pages/Rapport/Rapports';
 import Carte from './pages/Carte/Carte';
 import Statistiques from './pages/Stats/Statistiques';
 import { useLang } from './context/LanguageContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import t from './i18n/translations.json';
-import './styles/variables.css';
-import './styles/global.css';
+import './styles/Variables.css';
+import './styles/Global.css';
 import LoginPage from './pages/Login/Login';
 
 const PAGES = {
@@ -23,9 +24,9 @@ const PAGES = {
   rapports:     { component: Rapports,     titleKey: 'rapports',     subKey: 'rapports'     },
 };
 
-export default function App() {
+function AppInner() {
   const { lang } = useLang();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, logout } = useAuth();
   const [activeNav, setActiveNav] = useState('dashboard');
   const isDesktop = useMediaQuery('(min-width: 900px)');
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -34,9 +35,8 @@ export default function App() {
     setSidebarOpen(isDesktop);
   }, [isDesktop]);
 
-  // ── Show login page if not authenticated ──
   if (!isLoggedIn) {
-    return <LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />;
+    return <LoginPage />;
   }
 
   const page = PAGES[activeNav] ?? PAGES.dashboard;
@@ -50,7 +50,7 @@ export default function App() {
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    logout();
     setActiveNav('dashboard');
   };
 
@@ -83,5 +83,13 @@ export default function App() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppInner />
+    </AuthProvider>
   );
 }

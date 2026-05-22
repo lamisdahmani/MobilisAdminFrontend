@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useLang } from '../../context/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
 import t from '../../i18n/translations.json';
 
 function validate(name, value, text, lang) {
   switch (name) {
     case 'email':
       if (!value) return text.email_required[lang];
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return text.email_invalid[lang];
       return '';
     case 'password':
       if (!value) return text.password_required[lang];
@@ -17,19 +17,19 @@ function validate(name, value, text, lang) {
   }
 }
 
-export default function AuthPanel({ onLoginSuccess }) {
+export default function AuthPanel() {
   const { lang } = useLang();
+  const { login, loading, error: authError } = useAuth();
   const text = t.auth;
 
-  const [login, setLogin] = useState({ email: '', password: '' });
+  const [login_form, setLoginForm] = useState({ email: '', password: '' });
   const [loginErr, setLoginErr] = useState({});
   const [loginTouched, setLoginTouched] = useState({});
   const [showLoginPass, setShowLoginPass] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
 
   function handleLoginChange(e) {
     const { name, value } = e.target;
-    setLogin((p) => ({ ...p, [name]: value }));
+    setLoginForm((p) => ({ ...p, [name]: value }));
     if (loginTouched[name])
       setLoginErr((p) => ({ ...p, [name]: validate(name, value, text, lang) }));
   }
@@ -40,15 +40,17 @@ export default function AuthPanel({ onLoginSuccess }) {
     setLoginErr((p) => ({ ...p, [name]: validate(name, value, text, lang) }));
   }
 
-  function handleLoginSubmit() {
+  async function handleLoginSubmit() {
     const fields = ['email', 'password'];
     const touched = Object.fromEntries(fields.map((f) => [f, true]));
     const errors = Object.fromEntries(
-      fields.map((f) => [f, validate(f, login[f], text, lang)])
+      fields.map((f) => [f, validate(f, login_form[f], text, lang)])
     );
     setLoginTouched(touched);
     setLoginErr(errors);
-    if (Object.values(errors).every((e) => !e)) onLoginSuccess?.();
+    if (Object.values(errors).some((e) => e)) return;
+
+    await login(login_form.email, login_form.password);
   }
 
   return (
@@ -58,13 +60,20 @@ export default function AuthPanel({ onLoginSuccess }) {
           <div className="lp-forms-body">
             <div className="lp-auth-form">
 
+              {/* Server error message */}
+              {authError && (
+                <div className="lp-server-error">
+                  <WarningIcon /> {authError}
+                </div>
+              )}
+
               <Field label={text.email[lang]} error={loginErr.email}>
                 <input
                   name="email"
-                  type="email"
+                  type="text"
                   className={`lp-field-input ${loginTouched.email ? (loginErr.email ? 'lp-input-error' : 'lp-input-ok') : ''}`}
-                  placeholder="youremail@gmail.com"
-                  value={login.email}
+                  placeholder="email@mobilis.dz ou numéro"
+                  value={login_form.email}
                   onChange={handleLoginChange}
                   onBlur={handleLoginBlur}
                 />
@@ -77,7 +86,7 @@ export default function AuthPanel({ onLoginSuccess }) {
                     type={showLoginPass ? 'text' : 'password'}
                     className={`lp-field-input ${loginTouched.password ? (loginErr.password ? 'lp-input-error' : 'lp-input-ok') : ''}`}
                     placeholder="••••••••••"
-                    value={login.password}
+                    value={login_form.password}
                     onChange={handleLoginChange}
                     onBlur={handleLoginBlur}
                   />
@@ -87,22 +96,13 @@ export default function AuthPanel({ onLoginSuccess }) {
                 </div>
               </Field>
 
-              <div className="lp-login-meta">
-                <label className="lp-checkbox-label">
-                  <input type="checkbox" checked={rememberMe} onChange={() => setRememberMe((v) => !v)} />
-                  <span>{text.remember_me[lang]}</span>
-                </label>
-                <a href="#" className="lp-forgot-link">{text.forgot_password[lang]}</a>
-              </div>
-
-              <button type="button" className="lp-btn-primary" onClick={handleLoginSubmit}>
-                {text.login_btn[lang]}
-              </button>
-
-              <div className="lp-divider"><span>{text.or_label[lang]}</span></div>
-
-              <button type="button" className="lp-btn-google">
-                <GoogleIcon />{text.google_btn[lang]}
+              <button
+                type="button"
+                className="lp-btn-primary"
+                onClick={handleLoginSubmit}
+                disabled={loading}
+              >
+                {loading ? 'Connexion...' : text.login_btn[lang]}
               </button>
 
             </div>
@@ -155,17 +155,6 @@ function WarningIcon() {
       <circle cx="12" cy="12" r="10" />
       <line x1="12" y1="8" x2="12" y2="12" />
       <line x1="12" y1="16" x2="12.01" y2="16" />
-    </svg>
-  );
-}
-
-function GoogleIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 48 48" style={{ marginRight: '8px' }}>
-      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
-      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
-      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
-      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
     </svg>
   );
 }
