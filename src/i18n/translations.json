@@ -104,9 +104,9 @@
     },
     "globalStatus": {
       "title": { "fr": "Statut Global", "en": "Global Status", "ar": "الحالة العامة" },
-      "resolus": { "fr": "Résolus — 64%", "en": "Resolved — 64%", "ar": "تم الحل — 64%" },
-      "enCours": { "fr": "En cours — 21%", "en": "In progress — 21%", "ar": "قيد المعالجة — 21%" },
-      "enAttente": { "fr": "En attente — 15%", "en": "Pending — 15%", "ar": "في الانتظار — 15%" }
+      "resolus": { "fr": "Résolus", "en": "Resolved", "ar": "تم الحل" },
+      "enCours": { "fr": "En cours", "en": "In progress", "ar": "قيد المعالجة" },
+      "enAttente": { "fr": "En attente", "en": "Pending", "ar": "في الانتظار" }
     },
     "topZones": {
       "title": { "fr": "Top 3 zones critiques", "en": "Top 3 critical zones", "ar": "أعلى 3 مناطق حرجة" }

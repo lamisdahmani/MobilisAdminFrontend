@@ -1,8 +1,9 @@
 // FILE: MobilisAdminFrontend/src/pages/Signalements/Signalements.jsx
-// FIXED: after saving a status update, calls notificationsApi.sendStatusUpdate()
-//        so the mobile user gets a push notification immediately.
-// FIXED: auto-polls every 30s so new reports from the mobile app appear
-//        without requiring a full page reload.
+// - Auto-polls every 30 s (silent refresh) so new mobile reports appear without
+//   requiring a full page reload.
+// - After saving a status update the admin frontend calls notificationsApi so
+//   the mobile user gets a push notification immediately.
+// - Field mapping fixed: backend returns `statut` (string) and `problemType` (string).
 
 import { useState, useEffect, useCallback } from 'react';
 import { Search, Eye, Settings, Trash2, ChevronLeft, ChevronRight, X } from 'lucide-react';
@@ -47,7 +48,6 @@ export default function Signalements() {
   const [newStatut,   setNewStatut]   = useState('');
   const [notesAdmin,  setNotesAdmin]  = useState('');
   const [saving,      setSaving]      = useState(false);
-  // Notification feedback
   const [notifStatus, setNotifStatus] = useState(null); // 'sent' | 'failed' | null
 
   // ── Fetch reports ───────────────────────────────────────────────────────────
@@ -60,14 +60,22 @@ export default function Signalements() {
       ...(wilaya ? { wilaya } : {}),
       ...(type   ? { typeProbleme: type } : {}),
     })
-      .then(res => setData(res.data))
+      .then(res => {
+        // Backend wraps in { items, totalCount, totalPages } — handle both shapes
+        if (res && res.items !== undefined) {
+          setData(res);
+        } else if (Array.isArray(res)) {
+          // Fallback: raw array (no pagination wrapper)
+          setData({ items: res, totalCount: res.length, totalPages: 1 });
+        }
+      })
       .catch(console.error)
       .finally(() => { if (!silent) setLoading(false); });
   }, [page, activeFilter, wilaya, type]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  // ── Auto-refresh every 30s so new mobile reports appear automatically ──────
+  // ── Auto-refresh every 30 s so new mobile reports appear automatically ─────
   useEffect(() => {
     const interval = setInterval(() => fetchData(true), REFRESH_INTERVAL);
     return () => clearInterval(interval);
@@ -77,7 +85,8 @@ export default function Signalements() {
 
   const openEdit = (row) => {
     setEditRow(row);
-    setNewStatut(row.statut);
+    // row.statut is already a string like "Pending" / "InProgress" / "Resolved"
+    setNewStatut(row.statut ?? 'Pending');
     setNotesAdmin('');
     setNotifStatus(null);
     setEditModal(true);
@@ -89,11 +98,10 @@ export default function Signalements() {
     setSaving(true);
     setNotifStatus(null);
     try {
-      // 1. Update status in DB
+      // 1. Update status in DB — backend also creates in-app notification + Expo push
       await reportsApi.updateStatut(editRow.id, { statut: newStatut, notesAdmin });
 
-      // 2. Send push notification to the mobile user
-      //    Fire-and-forget: we don't block the UI if notification fails
+      // 2. Secondary acknowledgement call — non-blocking
       notificationsApi.sendStatusUpdate(editRow.id, newStatut, notesAdmin)
         .then(() => setNotifStatus('sent'))
         .catch(() => setNotifStatus('failed'));
@@ -117,7 +125,7 @@ export default function Signalements() {
     }
   };
 
-  // Client-side search filter on top of paginated results
+  // Client-side search filter on top of server results
   const filtered = (data.items || []).filter(row => {
     if (!search) return true;
     return (
@@ -202,6 +210,7 @@ export default function Signalements() {
                   <td>—</td>
                   <td>{new Date(row.createdAt).toLocaleDateString('fr-FR')}</td>
                   <td>
+                    {/* row.statut is a string ("Pending" / "InProgress" / "Resolved") */}
                     <span className={`sig-badge ${STATUS_CONFIG[row.statut] ?? ''}`}>
                       {STATUS_LABELS[row.statut]?.[lang] ?? row.statut}
                     </span>
@@ -266,7 +275,6 @@ export default function Signalements() {
                 />
               </div>
 
-              {/* Notification feedback banner */}
               {notifStatus === 'sent' && (
                 <p className="modal-notif-ok">✓ Notification envoyée à l'utilisateur.</p>
               )}

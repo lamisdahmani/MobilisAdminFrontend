@@ -1,5 +1,3 @@
-// FILE: MobilisAdminFrontend/src/components/layout/Sidebar.jsx
-
 import { useState } from 'react';
 import { LayoutDashboard, AlertTriangle, BarChart2, Map, Users, FileText, LogOut, User } from 'lucide-react';
 import { useLang } from '../../context/LanguageContext';
@@ -23,17 +21,10 @@ const GESTION_ITEMS = [
 
 export default function Sidebar({ isOpen, activeItem, onNavigate, onLogout }) {
   const { lang } = useLang();
-  const s = t.sidebar;
   const { admin } = useAuth();
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const s = t.sidebar;
 
-  // Resolve the best display name from whatever the backend returns
-  const displayName =
-    admin?.fullName ||
-    admin?.username ||
-    admin?.name ||
-    admin?.email ||
-    'Admin';
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleNav = (id) => {
     onNavigate?.(id);
@@ -65,6 +56,7 @@ export default function Sidebar({ isOpen, activeItem, onNavigate, onLogout }) {
               <span>{s[item.labelKey][lang]}</span>
             </div>
           ))}
+
           <p className="nav-section-title">{s.gestionTitle[lang]}</p>
           {GESTION_ITEMS.map(item => (
             <div
@@ -85,10 +77,10 @@ export default function Sidebar({ isOpen, activeItem, onNavigate, onLogout }) {
               <User size={16} color="var(--color-primary)" />
             </div>
             <div className="sidebar-user-info">
-              {/* FIXED: use real admin name from AuthContext instead of hardcoded translation */}
-              <div className="sidebar-user-name">{displayName}</div>
+              <div className="sidebar-user-name">{admin?.fullName ?? 'Admin'}</div>
               <div className="sidebar-user-role">{s.adminRole?.[lang] ?? 'Administrateur'}</div>
             </div>
+            {/* Opens the confirmation modal instead of logging out directly */}
             <button
               className="sidebar-logout-btn"
               onClick={() => setShowLogoutModal(true)}

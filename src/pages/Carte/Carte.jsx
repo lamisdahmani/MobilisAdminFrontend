@@ -1,173 +1,334 @@
-import { useState, useCallback, useRef } from 'react';
-import { GoogleMap, useJsApiLoader, OverlayView } from '@react-google-maps/api';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { GoogleMap, useJsApiLoader, Circle } from '@react-google-maps/api';
 import { Search } from 'lucide-react';
 import './Carte.css';
 import t from '../../i18n/translations.json';
 import { useLang } from '../../context/LanguageContext';
+import { reportsApi } from '../../api/client';
 
-/* ── Google Maps API key ── */
-const GOOGLE_API_KEY = 'AIzaSyC7fbKlHoD_qKCV4ZstFyk_AQ2a6OJdlUw';
+const GOOGLE_API_KEY = 'AIzaSyADlYf8_6pMDrmeEIZjLeDmRAIifZmN7Mo';
+const BACKEND = 'http://localhost:5253';
 
-/* ── Map style — clean "light" look similar to CartoDB Voyager ── */
-const MAP_STYLES = [
-  { featureType: 'poi',            elementType: 'labels',      stylers: [{ visibility: 'off' }] },
-  { featureType: 'transit',        elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { featureType: 'road',           elementType: 'geometry',    stylers: [{ color: '#f5e6a3' }] },
-  { featureType: 'road.highway',   elementType: 'geometry',    stylers: [{ color: '#f0d060' }] },
-  { featureType: 'water',          elementType: 'geometry',    stylers: [{ color: '#b8d4e8' }] },
-  { featureType: 'landscape',      elementType: 'geometry',    stylers: [{ color: '#f2efe9' }] },
-  { featureType: 'administrative', elementType: 'labels.text.fill', stylers: [{ color: '#555' }] },
-];
-
-const MAP_OPTIONS = {
-  styles: MAP_STYLES,
-  disableDefaultUI: true,
-  zoomControl: true,
-  zoomControlOptions: { position: 9 }, /* BOTTOM_RIGHT = 9 */
-  clickableIcons: false,
-  gestureHandling: 'greedy',
+const CENTER = {
+  lat: 36.72,
+  lng: 3.15,
 };
 
-const CENTER = { lat: 36.7200, lng: 3.1500 };
+function getQualityColor(score) {
+  if (score >= 0.7) {
+    return {
+      fill: 'rgba(46,125,50,0.35)',
+      stroke: 'rgba(46,125,50,0.9)',
+    };
+  }
 
-/* ── Zone data ── */
-const zones = [
-  { nameKey: 'babEzzouar', signals: 218, bts: 'BTS-12', levelKey: 'critique', color: '#e63946', lat: 36.7193, lng: 3.1872 },
-  { nameKey: 'elHarrach',  signals: 184, bts: 'BTS-15', levelKey: 'critique', color: '#e63946', lat: 36.7056, lng: 3.1342 },
-  { nameKey: 'sidiMhamed', signals: 153, bts: 'BTS-09', levelKey: 'eleve',    color: '#f4a261', lat: 36.7425, lng: 3.0865 },
-  { nameKey: 'darElBeida', signals: 128, bts: 'BTS-07', levelKey: 'eleve',    color: '#f4a261', lat: 36.7300, lng: 3.2150 },
-  { nameKey: 'kouba',      signals: 77,  bts: 'BTS-02', levelKey: 'faible',   color: '#2d6a4f', lat: 36.7167, lng: 3.1000 },
-];
+  if (score >= 0.4) {
+    return {
+      fill: 'rgba(249,168,37,0.35)',
+      stroke: 'rgba(249,168,37,0.9)',
+    };
+  }
 
-const levelClass = { critique: 'badge-critique', eleve: 'badge-eleve', faible: 'badge-faible' };
-
-/* Colored circle marker rendered as DOM overlay */
-function CircleMarker({ zone, label, levelLabel, onClick }) {
-  return (
-    <OverlayView
-      position={{ lat: zone.lat, lng: zone.lng }}
-      mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-    >
-      <div
-        onClick={onClick}
-        title={label}
-        style={{
-          width: 18,
-          height: 18,
-          borderRadius: '50%',
-          background: zone.color,
-          border: '2.5px solid white',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.4)',
-          cursor: 'pointer',
-          transform: 'translate(-50%, -50%)',
-        }}
-      />
-    </OverlayView>
-  );
+  return {
+    fill: 'rgba(198,40,40,0.35)',
+    stroke: 'rgba(198,40,40,0.9)',
+  };
 }
 
-/* Info popup rendered as DOM overlay */
-function InfoPopup({ zone, label, levelLabel, onClose }) {
-  return (
-    <OverlayView
-      position={{ lat: zone.lat, lng: zone.lng }}
-      mapPaneName={OverlayView.FLOAT_PANE}
-    >
-      <div
-        style={{
-          background: 'white',
-          borderRadius: 10,
-          boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
-          padding: '10px 14px',
-          minWidth: 170,
-          transform: 'translate(-50%, calc(-100% - 20px))',
-          position: 'relative',
-        }}
-      >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          style={{
-            position: 'absolute', top: 6, right: 8,
-            background: 'none', border: 'none', cursor: 'pointer',
-            fontSize: 14, color: '#94a3b8', lineHeight: 1,
-          }}
-        >✕</button>
-
-        <p className="carte-info-name">{label}</p>
-        <p className="carte-info-sub">{zone.signals} signalements · {zone.bts}</p>
-        <span
-          className="carte-info-badge"
-          style={{ background: zone.color }}
-        >
-          {levelLabel}
-        </span>
-
-        {/* Arrow tip */}
-        <div style={{
-          position: 'absolute', bottom: -7, left: '50%',
-          transform: 'translateX(-50%)',
-          width: 0, height: 0,
-          borderLeft: '7px solid transparent',
-          borderRight: '7px solid transparent',
-          borderTop: '7px solid white',
-        }} />
-      </div>
-    </OverlayView>
-  );
+function samplesToScore(samples) {
+  if (samples >= 25) return 0.9;
+  if (samples >= 10) return 0.65;
+  if (samples >= 3) return 0.45;
+  return 0.2;
 }
+
+function levelFromCount(count) {
+  if (count > 80) return 'critique';
+  if (count > 40) return 'eleve';
+  return 'faible';
+}
+
+const levelClass = {
+  critique: 'badge-critique',
+  eleve: 'badge-eleve',
+  faible: 'badge-faible',
+};
 
 export default function Carte() {
   const { lang } = useLang();
   const c = t.carte;
 
-  const [search,      setSearch]      = useState('');
-  const [activeZone,  setActiveZone]  = useState(null);
-  const [heatmap,     setHeatmap]     = useState(false);
+  const [query, setQuery] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSugg, setShowSugg] = useState(false);
+
+  const [zones, setZones] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [heatmapMode, setHeatmapMode] = useState(false);
+
+  const [towers, setTowers] = useState([]);
+  const [btsPoints, setBtsPoints] = useState([]);
+
+  const [mapKey, setMapKey] = useState(0);
+
+  const [visibleRegion, setVisibleRegion] = useState({
+    minLat: 36.2,
+    maxLat: 37.2,
+    minLon: 2.5,
+    maxLon: 3.8,
+  });
+
   const mapRef = useRef(null);
+  const searchDebounce = useRef(null);
+  const fetchTimer = useRef(null);
 
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: GOOGLE_API_KEY,
   });
 
-  const onMapLoad = useCallback((map) => {
-    mapRef.current = map;
-  }, []);
-
-  const filtered = zones.filter(z =>
-    (t.signalements?.regions?.[z.nameKey]?.[lang] ?? z.nameKey)
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  );
-
-  const getLabel = (z) => t.signalements?.regions?.[z.nameKey]?.[lang] ?? z.nameKey;
-  const getLevel = (z) => c?.levels?.[z.levelKey]?.[lang] ?? z.levelKey;
-
-  const handleMarkerClick = (zone) => {
-    setActiveZone(prev => prev?.nameKey === zone.nameKey ? null : zone);
+  const mapOptions = {
+    disableDefaultUI: true,
+    zoomControl: true,
+    zoomControlOptions: { position: 9 },
+    clickableIcons: false,
+    gestureHandling: 'greedy',
   };
 
-  const handleZoneRowClick = (zone) => {
-    setActiveZone(zone);
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true);
+
+        const res = await reportsApi.getAll({
+          page: 1,
+          pageSize: 500,
+        });
+
+        const items = res?.items ?? res?.data?.items ?? [];
+
+        const byWilaya = {};
+
+        items.forEach(r => {
+          if (r.wilaya) {
+            byWilaya[r.wilaya] =
+              (byWilaya[r.wilaya] || 0) + 1;
+          }
+        });
+
+        setZones(
+          Object.entries(byWilaya)
+            .map(([wilaya, count]) => {
+              const first = items.find(
+                r => r.wilaya === wilaya
+              );
+
+              return {
+                wilaya,
+                count,
+                level: levelFromCount(count),
+                lat: first?.latitude ?? null,
+                lng: first?.longitude ?? null,
+              };
+            })
+            .sort((a, b) => b.count - a.count)
+        );
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
+  }, []);
+
+  async function fetchTowers(region, heatmap) {
+    if (!heatmap) {
+      setTowers([]);
+      setBtsPoints([]);
+      return;
+    }
+
+    try {
+      const params = new URLSearchParams({
+        minLat: String(region.minLat),
+        maxLat: String(region.maxLat),
+        minLon: String(region.minLon),
+        maxLon: String(region.maxLon),
+        limit: '400',
+      });
+
+      const [towersRes, btsRes] = await Promise.all([
+        fetch(`${BACKEND}/api/towers?${params}`),
+        fetch(`${BACKEND}/api/bts/heatmap`),
+      ]);
+
+      if (towersRes.ok) {
+        setTowers(await towersRes.json());
+      }
+
+      if (btsRes.ok) {
+        const data = await btsRes.json();
+
+        setBtsPoints(
+          Array.isArray(data?.points)
+            ? data.points
+            : []
+        );
+      }
+    } catch {
+      setTowers([]);
+      setBtsPoints([]);
+    }
+  }
+
+  useEffect(() => {
+    if (fetchTimer.current) {
+      clearTimeout(fetchTimer.current);
+    }
+
+    if (!heatmapMode) {
+      setTowers([]);
+      setBtsPoints([]);
+      return;
+    }
+
+    fetchTimer.current = setTimeout(() => {
+      fetchTowers(visibleRegion, heatmapMode);
+    }, 400);
+
+    return () => {
+      if (fetchTimer.current) {
+        clearTimeout(fetchTimer.current);
+      }
+    };
+  }, [heatmapMode, visibleRegion]);
+
+  const onMapLoad = useCallback(map => {
+    mapRef.current = map;
+
+    map.addListener('idle', () => {
+      const bounds = map.getBounds();
+
+      if (!bounds) return;
+
+      const ne = bounds.getNorthEast();
+      const sw = bounds.getSouthWest();
+
+      setVisibleRegion({
+        minLat: sw.lat(),
+        maxLat: ne.lat(),
+        minLon: sw.lng(),
+        maxLon: ne.lng(),
+      });
+    });
+  }, []);
+
+  function handleSearchChange(e) {
+    const val = e.target.value;
+
+    setQuery(val);
+
+    if (searchDebounce.current) {
+      clearTimeout(searchDebounce.current);
+    }
+
+    if (val.trim().length < 2) {
+      setSuggestions([]);
+      setShowSugg(false);
+      return;
+    }
+
+    searchDebounce.current = setTimeout(async () => {
+      try {
+        const url =
+          `https://nominatim.openstreetmap.org/search?q=` +
+          `${encodeURIComponent(val + ', Algeria')}` +
+          `&format=json&limit=5&accept-language=${lang}`;
+
+        const res = await fetch(url, {
+          headers: {
+            'User-Agent': 'MobilisAdmin/1.0',
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+
+          setSuggestions(
+            data.map(d => ({
+              name: d.display_name,
+              lat: parseFloat(d.lat),
+              lng: parseFloat(d.lon),
+            }))
+          );
+
+          setShowSugg(true);
+        }
+      } catch {}
+    }, 400);
+  }
+
+  function handleSuggestionClick(s) {
+    setQuery(s.name);
+    setShowSugg(false);
+
     if (mapRef.current) {
-      mapRef.current.panTo({ lat: zone.lat, lng: zone.lng });
+      mapRef.current.panTo({
+        lat: s.lat,
+        lng: s.lng,
+      });
+
+      mapRef.current.setZoom(14);
+    }
+  }
+
+  const handleZoneRowClick = z => {
+    if (z.lat && z.lng && mapRef.current) {
+      mapRef.current.panTo({
+        lat: z.lat,
+        lng: z.lng,
+      });
+
+      mapRef.current.setZoom(13);
     }
   };
 
+  const getLevel = level =>
+    c?.levels?.[level]?.[lang] ?? level;
+
   return (
     <div className="carte-page">
-
-      {/* ── MAP ── */}
-      <div className="carte-map-container">
-
-        {/* Floating heatmap toggle */}
+      <div
+        className="carte-map-container"
+        style={{ position: 'relative' }}
+      >
         <button
           className="carte-btn-heatmap"
           type="button"
-          onClick={() => setHeatmap(h => !h)}
+          onClick={() => {
+            setHeatmapMode(prev => !prev);
+
+            setTowers([]);
+            setBtsPoints([]);
+
+            setMapKey(prev => prev + 1);
+          }}
+          style={{
+            position: 'absolute',
+            top: 12,
+            left: 12,
+            zIndex: 10,
+          }}
         >
           <span className="orange-circle-icon" />
-          <span>View heat map</span>
+
+          <span>
+            {heatmapMode
+              ? 'Carte thermique ON'
+              : 'Carte thermique OFF'}
+          </span>
         </button>
 
         <div className="carte-map">
@@ -185,100 +346,210 @@ export default function Carte() {
 
           {isLoaded && (
             <GoogleMap
-              mapContainerStyle={{ width: '100%', height: '100%' }}
+              key={mapKey}
+              mapContainerStyle={{
+                width: '100%',
+                height: '100%',
+              }}
               center={CENTER}
               zoom={12}
-              options={MAP_OPTIONS}
+              options={mapOptions}
               onLoad={onMapLoad}
-              onClick={() => setActiveZone(null)}
             >
-              {/* Markers */}
-              {zones.map(z => (
-                <CircleMarker
-                  key={z.nameKey}
-                  zone={z}
-                  label={getLabel(z)}
-                  levelLabel={getLevel(z)}
-                  onClick={(e) => { e.stopPropagation?.(); handleMarkerClick(z); }}
-                />
-              ))}
+              {heatmapMode && (
+                <>
+                  {btsPoints.map((p, i) => {
+                    const colors = getQualityColor(
+                      p.intensity ?? 0.5
+                    );
 
-              {/* Active info popup */}
-              {activeZone && (
-                <InfoPopup
-                  zone={activeZone}
-                  label={getLabel(activeZone)}
-                  levelLabel={getLevel(activeZone)}
-                  onClose={() => setActiveZone(null)}
-                />
+                    return (
+                      <Circle
+                        key={`bts-${i}-${p.lat}-${p.lng}`}
+                        center={{
+                          lat: p.lat,
+                          lng: p.lng,
+                        }}
+                        radius={800}
+                        options={{
+                          fillColor: colors.fill,
+                          strokeColor: colors.stroke,
+                          strokeWeight: 1,
+                        }}
+                      />
+                    );
+                  })}
+
+                  {towers.map(tower => {
+                    const colors = getQualityColor(
+                      samplesToScore(tower.samples)
+                    );
+
+                    return (
+                      <Circle
+                        key={`tower-${tower.id}`}
+                        center={{
+                          lat: tower.lat,
+                          lng: tower.lon,
+                        }}
+                        radius={Math.min(
+                          Math.max(
+                            tower.range ?? 800,
+                            400
+                          ),
+                          2500
+                        )}
+                        options={{
+                          fillColor: colors.fill,
+                          strokeColor: colors.stroke,
+                          strokeWeight: 1,
+                        }}
+                      />
+                    );
+                  })}
+                </>
               )}
             </GoogleMap>
           )}
         </div>
       </div>
 
-      {/* ── SIDEBAR ── */}
       <div className="carte-sidebar">
-
-        {/* Search */}
-        <div className="carte-search-wrap">
+        <div
+          className="carte-search-wrap"
+          style={{ position: 'relative' }}
+        >
           <Search size={14} color="#94a3b8" />
+
           <input
             className="carte-search"
-            placeholder={c?.searchPlaceholder?.[lang] ?? 'Recherche…'}
-            value={search}
-            onChange={e => setSearch(e.target.value)}
+            placeholder="Rechercher un lieu, une wilaya…"
+            value={query}
+            onChange={handleSearchChange}
+            onFocus={() =>
+              suggestions.length > 0 &&
+              setShowSugg(true)
+            }
+            onBlur={() =>
+              setTimeout(() => setShowSugg(false), 200)
+            }
           />
+
+          {showSugg && suggestions.length > 0 && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                zIndex: 999,
+                background: '#fff',
+                border: '1px solid #e2e8f0',
+                borderRadius: 8,
+                boxShadow:
+                  '0 4px 12px rgba(0,0,0,0.1)',
+                overflow: 'hidden',
+              }}
+            >
+              {suggestions.map((s, i) => (
+                <div
+                  key={i}
+                  onMouseDown={() =>
+                    handleSuggestionClick(s)
+                  }
+                  style={{
+                    padding: '9px 12px',
+                    fontSize: 13,
+                    color: '#1a2332',
+                    cursor: 'pointer',
+                    borderBottom:
+                      i < suggestions.length - 1
+                        ? '1px solid #f1f5f9'
+                        : 'none',
+                  }}
+                  onMouseEnter={e =>
+                    (e.currentTarget.style.background =
+                      '#f8fafc')
+                  }
+                  onMouseLeave={e =>
+                    (e.currentTarget.style.background =
+                      '#fff')
+                  }
+                >
+                  {s.name}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Zones critiques panel */}
         <div className="carte-panel">
           <h3 className="carte-panel-title">
-            {c?.criticalZones?.title?.[lang] ?? 'Zones critiques'}
+            {c?.criticalZones?.title?.[lang] ??
+              'Zones critiques'}
           </h3>
-          <div className="carte-zones">
-            {filtered.map(z => (
-              <div
-                key={z.nameKey}
-                className="carte-zone-row"
-                style={{ cursor: 'pointer' }}
-                onClick={() => handleZoneRowClick(z)}
-              >
-                <div className="carte-zone-info">
-                  <span className="carte-zone-name">{getLabel(z)}</span>
-                  <span className="carte-zone-sub">
-                    {z.signals} {c?.criticalZones?.signalements?.[lang] ?? 'signalements'} · {z.bts}
+
+          {loading ? (
+            <p
+              style={{
+                color: '#aaa',
+                fontSize: 13,
+                padding: '8px 0',
+              }}
+            >
+              Chargement…
+            </p>
+          ) : (
+            <div className="carte-zones">
+              {zones.map(z => (
+                <div
+                  key={z.wilaya}
+                  className="carte-zone-row"
+                  style={{
+                    cursor: z.lat
+                      ? 'pointer'
+                      : 'default',
+                  }}
+                  onClick={() =>
+                    handleZoneRowClick(z)
+                  }
+                >
+                  <div className="carte-zone-info">
+                    <span className="carte-zone-name">
+                      {z.wilaya}
+                    </span>
+
+                    <span className="carte-zone-sub">
+                      {z.count}{' '}
+                      {c?.criticalZones?.signalements?.[
+                        lang
+                      ] ?? 'signalements'}
+                    </span>
+                  </div>
+
+                  <span
+                    className={`carte-badge ${
+                      levelClass[z.level]
+                    }`}
+                  >
+                    {getLevel(z.level)}
                   </span>
                 </div>
-                <span className={`carte-badge ${levelClass[z.levelKey]}`}>
-                  {getLevel(z)}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
 
-        {/* Niveau de criticité panel */}
-        <div className="carte-panel">
-          <h3 className="carte-panel-title">
-            {c?.criticityLevel?.title?.[lang] ?? 'Niveau de criticité'}
-          </h3>
-          <div className="carte-legend">
-            <div className="carte-legend-item">
-              <span className="carte-dot" style={{ background: '#e63946' }} />
-              <span>{c?.criticityLevel?.critique?.[lang] ?? 'Critique (+80 signalements)'}</span>
+              {zones.length === 0 && (
+                <p
+                  style={{
+                    color: '#aaa',
+                    fontSize: 13,
+                  }}
+                >
+                  Aucune zone.
+                </p>
+              )}
             </div>
-            <div className="carte-legend-item">
-              <span className="carte-dot" style={{ background: '#f4a261' }} />
-              <span>{c?.criticityLevel?.eleve?.[lang] ?? 'Élevé 40–80'}</span>
-            </div>
-            <div className="carte-legend-item">
-              <span className="carte-dot" style={{ background: '#2d6a4f' }} />
-              <span>{c?.criticityLevel?.faible?.[lang] ?? 'Faible <40'}</span>
-            </div>
-          </div>
+          )}
         </div>
-
       </div>
     </div>
   );

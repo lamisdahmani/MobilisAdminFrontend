@@ -37,18 +37,17 @@ export default function SignalementsTable() {
       pageSize: ROWS_PER_PAGE,
       ...(typeFilter !== 'all' ? { typeProbleme: typeFilter } : {}),
     })
-      .then(res => setData(res.data))
+      // ✅ FIX: client.js returns JSON directly — no .data wrapper
+      .then(res => setData(res && res.items !== undefined ? res : { items: [], totalCount: 0, totalPages: 1 }))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [page, typeFilter]);
 
   useEffect(() => { fetchReports(); }, [fetchReports]);
 
-  // Reset page when filter changes
   const handleType   = (e) => { setType(e.target.value); setPage(1); };
   const handleSearch = (e) => { setSearch(e.target.value); setPage(1); };
 
-  // Client-side search on top of paginated results
   const pageRows = (data.items || []).filter(row => {
     if (!search) return true;
     return (
@@ -98,8 +97,8 @@ export default function SignalementsTable() {
             ) : pageRows.length === 0 ? (
               <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9aa5b4', padding: '24px' }}>Aucun résultat</td></tr>
             ) : pageRows.map((row) => {
-              const typeLabel   = pt[row.problemType]?.[lang]                        ?? row.problemType;
-              const statusLabel = STATUS_LABEL[row.statut]?.[lang]                   ?? row.statut;
+              const typeLabel   = pt[row.problemType]?.[lang] ?? row.problemType;
+              const statusLabel = STATUS_LABEL[row.statut]?.[lang] ?? row.statut;
               const isTraiter   = row.statut === 'Pending';
               const actionLabel = isTraiter ? tb.actionTraiter[lang] : tb.actionVoir[lang];
               return (
